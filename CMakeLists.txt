@@ -3,4 +3,5 @@ project(PS)
 
 set(CMAKE_CXX_STANDARD 23)
 
-add_executable(PS main.cpp)
+add_executable(PS main.cpp
+        ParticleSystem.h)
