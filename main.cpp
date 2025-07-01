@@ -1,6 +1,6 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
-#include "ParticleSystem/ParticleSystem.h"
+#include "ParticleSystem.h"
 
 int main()
 {
