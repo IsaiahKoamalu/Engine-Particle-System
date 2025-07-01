@@ -1,40 +1,43 @@
-#include <iostream>
 #include <SFML/Graphics.hpp>
 #include "ParticleSystem.h"
 
 int main()
 {
-    int WIDTH = 800;
-    int HEIGHT = 600;
-    sf::RenderWindow window;
-    window.create(sf::VideoMode(WIDTH, HEIGHT), "Particle System");
+    constexpr unsigned WIN_W = 800;
+    constexpr unsigned WIN_H = 600;
 
-    ParticleSystem particles(1000);
+    sf::RenderWindow window({WIN_W, WIN_H}, "Particle Burst");
+    window.setVerticalSyncEnabled(true);
+
+    ParticleSystem particles;                          // default reserve = 0
+    particles.setEmitter({WIN_W / 2.f, WIN_H / 2.f});  // centre of the window
+    particles.setParticleLifetime(sf::seconds(3.f));   // tweak as you like
 
     sf::Clock clock;
 
-    while (window.isOpen()) {
-        //float dt = clock.restart().asSeconds();
-        sf::Event event;
-
-        while(window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
+    while (window.isOpen())
+    {
+        sf::Event event{};
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
                 window.close();
+
+            // single burst per key-down
+            if (event.type == sf::Event::KeyPressed &&
+                event.key.code == sf::Keyboard::Space)
+            {
+                particles.spawnParticles(1000);         // particle burst of X amount
             }
         }
 
-        // emitter follows mouse
-        sf::Vector2i mouse = sf::Mouse::getPosition(window);
-        particles.setEmitter(window.mapPixelToCoords(mouse));
+        sf::Time dt = clock.restart();
+        particles.update(dt);
 
-        // updates
-        sf::Time elapsed = clock.restart();
-        particles.update(elapsed);
-
-        // rendering
-        window.clear(sf::Color::Black);
+        window.clear();
         window.draw(particles);
         window.display();
     }
+
     return 0;
 }
